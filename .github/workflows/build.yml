@@ -47,6 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAVEN_OPTS: -Xmx2048m -Declipse.p2.mirrors=false
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     steps:
       - name: Checkout JMC
         uses: actions/checkout@v2
@@ -78,9 +79,12 @@ jobs:
           echo "MAVEN_OPTS=$MAVEN_OPTS -DskipNexusStagingDeployMojo=true -Dchangelist=" >> $GITHUB_ENV
 
       - name: Set up JDK 11
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: temurin
           java-version: 11
+          gpg-private-key: "${{ secrets.GPG_SIGNING_KEY }}"
+          overwrite-settings: false
 
       - name: Build & test core libraries
         run: |
@@ -91,7 +95,7 @@ jobs:
       - name: Deploy core libraries
         if: needs.release.outputs.release == 'True'
         run: |
-          mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -Dpublish.user=$USERNAME -Dpublish.password=$PASSWORD -Drelease.repo=https://adoptopenjdk.jfrog.io/adoptopenjdk/jmc-libs -Dsnapshot.repo=https://adoptopenjdk.jfrog.io/adoptopenjdk/jmc-libs-snapshots -Dgpg.skip=true -DskipTests=true
+          mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -DskipTests=true
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
@@ -106,7 +110,7 @@ jobs:
       - name: Deploy agent libraries
         if: needs.release.outputs.release == 'True'
         run: |
-          mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -Dpublish.user=$USERNAME -Dpublish.password=$PASSWORD -Drelease.repo=https://adoptopenjdk.jfrog.io/adoptopenjdk/jmc-libs -Dsnapshot.repo=https://adoptopenjdk.jfrog.io/adoptopenjdk/jmc-libs-snapshots -Dgpg.skip=true -DskipTests=true
+          mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -DskipTests=true
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
