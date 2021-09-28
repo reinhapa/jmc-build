@@ -37,6 +37,10 @@
             <username>${env.USERNAME}</username>
             <password>${env.PASSWORD}</password>
         </server>
+        <server>
+            <id>gpg.passphrase</id>
+            <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+        </server>
     </servers>
     <activeProfiles>
         <activeProfile>jmc</activeProfile>
