@@ -16,7 +16,7 @@ on:
         checkoutRef:
           description: 'JMC Checkout reference'
           required: true
-          default: 'master'
+          default: 'jmc9'
         version:
           description: 'If running a release, set the version e.g (9.1.0-SNAPSHOT)'
           required: true
@@ -48,9 +48,10 @@ jobs:
     needs: release
     name: Build
     runs-on: ubuntu-latest
-    env:
-      MAVEN_OPTS: -Xmx2048m -Declipse.p2.mirrors=false
     steps:
+      - name: Setting maven options
+        run: echo "MAVEN_OPTS=-Xmx2048m -Declipse.p2.mirrors=false" >> $GITHUB_ENV
+
       - name: Checkout JMC
         uses: actions/checkout@v4.2.2
         with:
@@ -80,14 +81,6 @@ jobs:
           find . ! -path "*/.git/**" -type f \( -name "feature.xml" -o -name "MANIFEST.MF" \) -exec sed -i s/"${{ needs.release.outputs.version }}.qualifier"/"${{ needs.release.outputs.version }}"/ {} \;
           echo "MAVEN_OPTS=$MAVEN_OPTS -DskipNexusStagingDeployMojo=true -Dchangelist=" >> $GITHUB_ENV
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4.7.0
-        with:
-          java-version: 17
-          distribution: temurin
-          cache: 'maven'
-          mvn-toolchain-id: 'JavaSE-17'
-      
       - name: Set up JDK 21
         uses: actions/setup-java@v4.7.0
         with:
