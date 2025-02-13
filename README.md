@@ -24,3 +24,8 @@ The build runs thru the following steps:
 ## Update of overridden files
 The override files will be kept up to date by manually comparing those with the original
 versions on the main JMC repository keeping the intended changes
+
+## Manual steps after relase
+After the a new release of Mission Control is being done, the project website
+downloads page (https://projects.eclipse.org/projects/adoptium.mc/downloads) needs
+to be updated manually.
