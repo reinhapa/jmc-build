@@ -113,7 +113,7 @@ jobs:
         working-directory: core
 
       - name: Deploy core libraries
-        if: needs.release.outputs.release
+        if: false
         run: |
           mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -Dpublish.user=$USERNAME -Dpublish.password=$PASSWORD -Drelease.repo=https://adoptium.jfrog.io/artifactory/jmc-libs -Dsnapshot.repo=https://adoptium.jfrog.io/artifactory/jmc-libs-snapshots -Dgpg.skip=true -DskipTests=true
         env:
@@ -128,7 +128,7 @@ jobs:
         working-directory: agent
 
       - name: Deploy agent libraries
-        if: needs.release.outputs.release
+        if: false
         run: |
           mvn deploy --settings $GITHUB_WORKSPACE/.m2/settings.xml -Dpublish.user=$USERNAME -Dpublish.password=$PASSWORD -Drelease.repo=https://adoptium.jfrog.io/artifactory/jmc-libs -Dsnapshot.repo=https://adoptium.jfrog.io/artifactory/jmc-libs-snapshots -Dgpg.skip=true -DskipTests=true
         env:
@@ -163,7 +163,7 @@ jobs:
           fail-on-error: false # Prevents this step from failing when reports show failed tests
 
       - name: Deploy update sites
-        if: needs.release.outputs.release
+        if: false
         run: |
           curl -X DELETE -u "$USERNAME:$PASSWORD" https://adoptium.jfrog.io/artifactory/jmc-snapshots/ide
           find . -type f -exec curl -o /dev/null -s -u "$USERNAME:$PASSWORD" -T \'{}\' https://adoptium.jfrog.io/artifactory/jmc-snapshots/ide/\'{}\' \;
@@ -172,7 +172,7 @@ jobs:
           PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
         working-directory: application/org.openjdk.jmc.updatesite.ide/target/repository
 
-      - if: needs.release.outputs.release
+      - if: false
         name: Delete old linux assets from ${{ needs.release.outputs.releaseTag }}
         uses: mknejp/delete-release-assets@ea7ff12c30ef2589fe4311264f3a336d01325030 # v1
         with:
@@ -189,7 +189,7 @@ jobs:
 
       - name: Deploy release assets
         uses: softprops/action-gh-release@v2.2.1
-        if: needs.release.outputs.release
+        if: false
         with:
           files: |
             release-${{ needs.release.outputs.version }}.txt
