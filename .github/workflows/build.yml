@@ -87,7 +87,7 @@ jobs:
           distribution: temurin
           cache: 'maven'
           mvn-toolchain-id: 'JavaSE-17'
-      
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4.7.0
         with:
@@ -95,7 +95,7 @@ jobs:
           distribution: temurin
           cache: 'maven'
           mvn-toolchain-id: 'JavaSE-21'
-      
+
       # Manually install Maven
       # https://github.com/actions/setup-java/issues/685#issuecomment-2354724977
       - name: Install latest Maven
@@ -158,8 +158,8 @@ jobs:
         if: always() # Always runs even if the job fails
         with:
           name: Unit Tests
-          path: target/surefire-reports/*.xml # Path to Surefire or TestNG reports
-          reporter: junit # Supported format
+          path: '**/target/surefire-reports/*.xml'
+          reporter: java-junit
           fail-on-error: false # Prevents this step from failing when reports show failed tests
 
       - name: Deploy update sites
